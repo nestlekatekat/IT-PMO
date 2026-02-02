@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Portfolio Manager Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #f43f5e;
+            --accent-light: #fb7185;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --surface: #ffffff;
+            --surface-hover: #f8fafc;
+            --bg: #f1f5f9;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.3rem;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 1.5rem 0;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            padding: 0.9rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background: var(--accent);
+            border-left: 4px solid white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            background: white;
+            padding: 1.2rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: white;
+        }
+
+        .btn-icon {
+            padding: 0.7rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Dashboard Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.8rem;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .stat-card.accent {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, #059669 0%, var(--success) 100%);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, #d97706 0%, var(--warning) 100%);
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--surface-hover);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:hover {
+            background: var(--surface-hover);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Status Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .badge-info { background: rgba(59, 130, 246, 0.15); color: var(--info); }
+        .badge-danger { background: rgba(244, 63, 94, 0.15); color: var(--accent); }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        .chart-bar {
+            display: flex;
+            gap: 1rem;
+            height: 100%;
+            align-items: flex-end;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--accent), var(--accent-light));
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+            transform: translateY(-5px);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Calendar */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-header {
+            text-align: center;
+            font-weight: 600;
+            padding: 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day:hover {
+            background: var(--surface-hover);
+            border-color: var(--accent);
+        }
+
+        .calendar-day.today {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .calendar-day.has-event {
+            background: rgba(244, 63, 94, 0.1);
+        }
+
+        .calendar-day .event-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-top: 2px;
+        }
+
+        /* File Manager */
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .file-item {
+            background: var(--surface-hover);
+            padding: 1.5rem 1rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .file-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .file-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .file-size {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 0.3rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.3rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.2s ease;
+        }
+
+        .tab:hover {
+            color: var(--accent);
+        }
+
+        .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        /* View Sections */
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Financial Cards */
+        .financial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .financial-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .financial-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .financial-amount {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .financial-comparison {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .comparison-item {
+            flex: 1;
+        }
+
+        .comparison-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.3rem;
+        }
+
+        .comparison-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                z-index: 999;
+                height: 100vh;
+            }
+
+            .sidebar.open {
+                transform: translateX(280px);
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Time Tracking */
+        .time-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--surface-hover);
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+        }
+
+        .time-entry-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .time-entry-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .time-duration {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--surface-hover);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Project Cards for Projects View */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-top: 4px solid var(--accent);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .project-client {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: var(--surface-hover);
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">Portfolio Pro</div>
+                <div class="logo-subtitle">Project Management</div>
+            </div>
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="showView('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" onclick="showView('summary')">
+                    <span class="nav-icon">📋</span>
+                    <span>Summary</span>
+                </div>
+                <div class="nav-item" onclick="showView('projects')">
+                    <span class="nav-icon">📁</span>
+                    <span>Projects</span>
+                </div>
+                <div class="nav-item" onclick="showView('tasks')">
+                    <span class="nav-icon">✓</span>
+                    <span>Tasks</span>
+                </div>
+                <div class="nav-item" onclick="showView('milestones')">
+                    <span class="nav-icon">🎯</span>
+                    <span>Milestones</span>
+                </div>
+                <div class="nav-item" onclick="showView('timetracking')">
+                    <span class="nav-icon">⏱</span>
+                    <span>Time Tracking</span>
+                </div>
+                <div class="nav-item" onclick="showView('financials')">
+                    <span class="nav-icon">💰</span>
+                    <span>Financials</span>
+                </div>
+                <div class="nav-item" onclick="showView('calendar')">
+                    <span class="nav-icon">📅</span>
+                    <span>Calendar</span>
+                </div>
+                <div class="nav-item" onclick="showView('files')">
+                    <span class="nav-icon">📎</span>
+                    <span>File Manager</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="topbar">
+                <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                <div class="topbar-actions">
+                    <button class="btn btn-secondary btn-icon" onclick="exportAllData()">⬇</button>
+                    <button class="btn" onclick="openNewProjectModal()">+ New Project</button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <!-- Dashboard View -->
+                <div class="view-section active" id="dashboard">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Projects</div>
+                            <div class="stat-value" id="dashTotalProjects">12</div>
+                            <div class="stat-change">↑ 2 from last month</div>
+                        </div>
+                        <div class="stat-card accent">
+                            <div class="stat-label">Active Projects</div>
+                            <div class="stat-value" id="dashActiveProjects">8</div>
+                            <div class="stat-change">5 in progress</div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="stat-label">Completed</div>
+                            <div class="stat-value" id="dashCompleted">4</div>
+                            <div class="stat-change">33% completion rate</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-label">Total Budget</div>
+                            <div class="stat-value" id="dashBudget">$485K</div>
+                            <div class="stat-change">Across all projects</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Project Progress Overview</h3>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-bar">
+                                <div class="bar" style="height: 75%;">
+                                    <div class="bar-value">75%</div>
+                                    <div class="bar-label">Q1</div>
+                                </div>
+                                <div class="bar" style="height: 60%;">
+                                    <div class="bar-value">60%</div>
+                                    <div class="bar-label">Q2</div>
+                                </div>
+                                <div class="bar" style="height: 85%;">
+                                    <div class="bar-value">85%</div>
+                                    <div class="bar-label">Q3</div>
+                                </div>
+                                <div class="bar" style="height: 45%;">
+                                    <div class="bar-value">45%</div>
+                                    <div class="bar-label">Q4</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activity</h3>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Project</th>
+                                        <th>Activity</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentActivity">
+                                    <tr>
+                                        <td><strong>Brand Redesign</strong></td>
+                                        <td>Milestone completed</td>
+                                        <td>2 hours ago</td>
+                                        <td><span class="badge badge-success">Active</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>E-Commerce Platform</strong></td>
+                                        <td>New task assigned</td>
+                                        <td>5 hours ago</td>
+                                        <td><span class="badge badge-info">In Progress</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Mobile App</strong></td>
+                                        <td>Budget updated</td>
+                                        <td>1 day ago</td>
+                                        <td><span class="badge badge-warning">Review</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary View -->
+                <div class="view-section" id="summary">
+                    <div class="card">
+                        <h3 class="card-title">Portfolio Summary</h3>
+                        <div class="financial-grid">
+                            <div class="financial-card">
+                                <div class="financial-label">Total Portfolio Value</div>
+                                <div class="financial-amount">$485,000</div>
+                                <div class="financial-comparison">
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Allocated</div>
+                                        <div class="comparison-value">$450K</div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Spent</div>
+                                        <div class="comparison-value">$285K</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="financial-card">
+                                <div class="financial-label">Active Hours Logged</div>
+                                <div class="financial-amount">1,248</div>
+                                <div class="financial-comparison">
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">This Month</div>
+                                        <div class="comparison-value">342h</div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Avg/Week</div>
+                                        <div class="comparison-value">86h</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="financial-card">
+                                <div class="financial-label">Team Members</div>
+                                <div class="financial-amount">24</div>
+                                <div class="financial-comparison">
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Active</div>
+                                        <div class="comparison-value">18</div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Projects/Member</div>
+                                        <div class="comparison-value">1.3</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">Project Status Distribution</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Count</th>
+                                        <th>Percentage</th>
+                                        <th>Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge badge-success">Active</span></td>
+                                        <td>8</td>
+                                        <td>67%</td>
+                                        <td><div class="progress-bar"><div class="progress-fill" style="width: 67%"></div></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge badge-info">Planning</span></td>
+                                        <td>2</td>
+                                        <td>17%</td>
+                                        <td><div class="progress-bar"><div class="progress-fill" style="width: 17%"></div></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge badge-warning">On Hold</span></td>
+                                        <td>1</td>
+                                        <td>8%</td>
+                                        <td><div class="progress-bar"><div class="progress-fill" style="width: 8%"></div></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge badge-success">Completed</span></td>
+                                        <td>4</td>
+                                        <td>33%</td>
+                                        <td><div class="progress-bar"><div class="progress-fill" style="width: 33%"></div></div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects View -->
+                <div class="view-section" id="projects">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">All Projects</h3>
+                            <button class="btn" onclick="openNewProjectModal()">+ Add Project</button>
+                        </div>
+                        <div class="projects-grid" id="projectsGrid">
+                            <!-- Projects will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks View -->
+                <div class="view-section" id="tasks">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Task Management</h3>
+                            <button class="btn" onclick="openNewTaskModal()">+ Add Task</button>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Task</th>
+                                        <th>Project</th>
+                                        <th>Assignee</th>
+                                        <th>Due Date</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tasksTable">
+                                    <!-- Tasks will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Milestones View -->
+                <div class="view-section" id="milestones">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Project Milestones</h3>
+                            <button class="btn" onclick="openNewMilestoneModal()">+ Add Milestone</button>
+                        </div>
+                        <div id="milestonesContainer">
+                            <!-- Milestones will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Tracking View -->
+                <div class="view-section" id="timetracking">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Time Tracking</h3>
+                            <button class="btn" onclick="openNewTimeEntry()">+ Log Time</button>
+                        </div>
+                        <div class="stats-grid" style="margin-bottom: 2rem;">
+                            <div class="stat-card">
+                                <div class="stat-label">Today</div>
+                                <div class="stat-value">6.5h</div>
+                            </div>
+                            <div class="stat-card accent">
+                                <div class="stat-label">This Week</div>
+                                <div class="stat-value">32h</div>
+                            </div>
+                            <div class="stat-card success">
+                                <div class="stat-label">This Month</div>
+                                <div class="stat-value">142h</div>
+                            </div>
+                        </div>
+                        <div id="timeEntriesContainer">
+                            <!-- Time entries will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financials View -->
+                <div class="view-section" id="financials">
+                    <div class="card">
+                        <h3 class="card-title">Budget vs Actual</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Project</th>
+                                        <th>Allocated Budget</th>
+                                        <th>Actual Spent</th>
+                                        <th>Remaining</th>
+                                        <th>Variance</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="financialsTable">
+                                    <!-- Financials will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">Financial Overview</h3>
+                        <div class="financial-grid">
+                            <div class="financial-card">
+                                <div class="financial-label">Total Allocated</div>
+                                <div class="financial-amount">$450,000</div>
+                                <div class="progress-bar" style="margin-top: 1rem;">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="financial-card">
+                                <div class="financial-label">Total Spent</div>
+                                <div class="financial-amount">$285,000</div>
+                                <div class="progress-bar" style="margin-top: 1rem;">
+                                    <div class="progress-fill" style="width: 63%"></div>
+                                </div>
+                            </div>
+                            <div class="financial-card">
+                                <div class="financial-label">Remaining Budget</div>
+                                <div class="financial-amount">$165,000</div>
+                                <div class="progress-bar" style="margin-top: 1rem;">
+                                    <div class="progress-fill" style="width: 37%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar View -->
+                <div class="view-section" id="calendar">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Project Calendar - February 2026</h3>
+                        </div>
+                        <div class="calendar">
+                            <div class="calendar-header">Sun</div>
+                            <div class="calendar-header">Mon</div>
+                            <div class="calendar-header">Tue</div>
+                            <div class="calendar-header">Wed</div>
+                            <div class="calendar-header">Thu</div>
+                            <div class="calendar-header">Fri</div>
+                            <div class="calendar-header">Sat</div>
+                            <!-- Calendar days will be generated -->
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">Upcoming Deadlines</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Event</th>
+                                        <th>Project</th>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Phase 1 Delivery</strong></td>
+                                        <td>Brand Redesign</td>
+                                        <td>Feb 15, 2026</td>
+                                        <td><span class="badge badge-warning">Milestone</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Client Review</strong></td>
+                                        <td>E-Commerce Platform</td>
+                                        <td>Feb 20, 2026</td>
+                                        <td><span class="badge badge-info">Meeting</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Final Delivery</strong></td>
+                                        <td>Mobile App</td>
+                                        <td>Feb 28, 2026</td>
+                                        <td><span class="badge badge-danger">Deadline</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Files View -->
+                <div class="view-section" id="files">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">File Manager</h3>
+                            <button class="btn" onclick="uploadFile()">⬆ Upload File</button>
+                        </div>
+                        <div class="file-grid" id="fileGrid">
+                            <!-- Files will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content" style="position: relative;">
+            <button class="close-btn" onclick="closeModal('projectModal')">×</button>
+            <h2 class="modal-header">New Project</h2>
+            <form id="projectForm">
+                <div class="form-group">
+                    <label>Project Name</label>
+                    <input type="text" id="projectName" required>
+                </div>
+                <div class="form-group">
+                    <label>Client</label>
+                    <input type="text" id="projectClient" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="projectDescription" required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="projectStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" id="projectEnd" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Budget</label>
+                        <input type="number" id="projectBudget" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="projectStatus" required>
+                            <option value="planning">Planning</option>
+                            <option value="active">Active</option>
+                            <option value="hold">On Hold</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Progress (%)</label>
+                    <input type="number" id="projectProgress" min="0" max="100" value="0">
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Save Project</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="taskModal">
+        <div class="modal-content" style="position: relative;">
+            <button class="close-btn" onclick="closeModal('taskModal')">×</button>
+            <h2 class="modal-header">New Task</h2>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label>Task Name</label>
+                    <input type="text" id="taskName" required>
+                </div>
+                <div class="form-group">
+                    <label>Project</label>
+                    <select id="taskProject" required>
+                        <option value="">Select Project</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="taskDescription"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Assignee</label>
+                        <input type="text" id="taskAssignee" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Due Date</label>
+                        <input type="date" id="taskDue" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="taskPriority" required>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="taskStatus" required>
+                            <option value="todo">To Do</option>
+                            <option value="inprogress">In Progress</option>
+                            <option value="review">Review</option>
+                            <option value="done">Done</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Save Task</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="milestoneModal">
+        <div class="modal-content" style="position: relative;">
+            <button class="close-btn" onclick="closeModal('milestoneModal')">×</button>
+            <h2 class="modal-header">New Milestone</h2>
+            <form id="milestoneForm">
+                <div class="form-group">
+                    <label>Milestone Name</label>
+                    <input type="text" id="milestoneName" required>
+                </div>
+                <div class="form-group">
+                    <label>Project</label>
+                    <select id="milestoneProject" required>
+                        <option value="">Select Project</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="milestoneDescription"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Due Date</label>
+                        <input type="date" id="milestoneDue" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="milestoneStatus" required>
+                            <option value="pending">Pending</option>
+                            <option value="inprogress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Save Milestone</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="timeModal">
+        <div class="modal-content" style="position: relative;">
+            <button class="close-btn" onclick="closeModal('timeModal')">×</button>
+            <h2 class="modal-header">Log Time</h2>
+            <form id="timeForm">
+                <div class="form-group">
+                    <label>Project</label>
+                    <select id="timeProject" required>
+                        <option value="">Select Project</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Task</label>
+                    <input type="text" id="timeTask" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="timeDescription"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="timeDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Hours</label>
+                        <input type="number" id="timeHours" step="0.5" min="0.5" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Log Time</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage
+        let data = {
+            projects: [],
+            tasks: [],
+            milestones: [],
+            timeEntries: [],
+            files: []
+        };
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('portfolioData');
+            if (saved) {
+                data = JSON.parse(saved);
+            } else {
+                // Initialize with sample data
+                initializeSampleData();
+            }
+            renderAll();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('portfolioData', JSON.stringify(data));
+        }
+
+        // Initialize sample data
+        function initializeSampleData() {
+            data.projects = [
+                {
+                    id: 1,
+                    name: 'Brand Redesign Initiative',
+                    client: 'TechCorp Industries',
+                    description: 'Complete overhaul of corporate brand identity',
+                    startDate: '2024-01-15',
+                    endDate: '2024-06-30',
+                    budget: 75000,
+                    spent: 45000,
+                    status: 'active',
+                    progress: 65
+                },
+                {
+                    id: 2,
+                    name: 'E-Commerce Platform',
+                    client: 'Retail Solutions Inc',
+                    description: 'Modern e-commerce platform development',
+                    startDate: '2024-02-01',
+                    endDate: '2024-08-15',
+                    budget: 120000,
+                    spent: 72000,
+                    status: 'active',
+                    progress: 45
+                },
+                {
+                    id: 3,
+                    name: 'Mobile App Development',
+                    client: 'HealthTech Startups',
+                    description: 'iOS and Android health tracking app',
+                    startDate: '2023-11-01',
+                    endDate: '2024-03-31',
+                    budget: 95000,
+                    spent: 95000,
+                    status: 'completed',
+                    progress: 100
+                }
+            ];
+
+            data.tasks = [
+                {
+                    id: 1,
+                    name: 'Design mockups',
+                    projectId: 1,
+                    assignee: 'Sarah Johnson',
+                    dueDate: '2024-02-15',
+                    priority: 'high',
+                    status: 'inprogress',
+                    description: 'Create initial design mockups for brand refresh'
+                },
+                {
+                    id: 2,
+                    name: 'API Integration',
+                    projectId: 2,
+                    assignee: 'Mike Chen',
+                    dueDate: '2024-02-20',
+                    priority: 'high',
+                    status: 'todo',
+                    description: 'Integrate payment gateway API'
+                },
+                {
+                    id: 3,
+                    name: 'User Testing',
+                    projectId: 2,
+                    assignee: 'Emily Davis',
+                    dueDate: '2024-02-25',
+                    priority: 'medium',
+                    status: 'todo',
+                    description: 'Conduct user acceptance testing'
+                }
+            ];
+
+            data.milestones = [
+                {
+                    id: 1,
+                    name: 'Phase 1 Completion',
+                    projectId: 1,
+                    dueDate: '2024-03-15',
+                    status: 'inprogress',
+                    description: 'Complete initial brand concept development'
+                },
+                {
+                    id: 2,
+                    name: 'MVP Launch',
+                    projectId: 2,
+                    dueDate: '2024-05-01',
+                    status: 'pending',
+                    description: 'Launch minimum viable product'
+                }
+            ];
+
+            data.timeEntries = [
+                {
+                    id: 1,
+                    projectId: 1,
+                    task: 'Design Review',
+                    date: '2024-02-01',
+                    hours: 4.5,
+                    description: 'Reviewed design concepts with team'
+                },
+                {
+                    id: 2,
+                    projectId: 2,
+                    task: 'Backend Development',
+                    date: '2024-02-01',
+                    hours: 6,
+                    description: 'Implemented user authentication'
+                },
+                {
+                    id: 3,
+                    projectId: 1,
+                    task: 'Client Meeting',
+                    date: '2024-02-02',
+                    hours: 2,
+                    description: 'Presented progress to client'
+                }
+            ];
+
+            data.files = [
+                { id: 1, name: 'Brand Guidelines.pdf', size: '2.4 MB', type: '📄', projectId: 1 },
+                { id: 2, name: 'Wireframes.fig', size: '8.1 MB', type: '🎨', projectId: 2 },
+                { id: 3, name: 'Budget Report.xlsx', size: '156 KB', type: '📊', projectId: 1 },
+                { id: 4, name: 'Project Plan.docx', size: '842 KB', type: '📝', projectId: 2 }
+            ];
+
+            saveData();
+        }
+
+        // Render all views
+        function renderAll() {
+            renderProjects();
+            renderTasks();
+            renderMilestones();
+            renderTimeEntries();
+            renderFinancials();
+            renderFiles();
+            renderCalendar();
+            updateDashboard();
+            populateProjectSelects();
+        }
+
+        // Show view
+        function showView(viewName) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewName).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            const titles = {
+                dashboard: 'Dashboard',
+                summary: 'Summary',
+                projects: 'Projects',
+                tasks: 'Tasks',
+                milestones: 'Milestones',
+                timetracking: 'Time Tracking',
+                financials: 'Financials',
+                calendar: 'Calendar',
+                files: 'File Manager'
+            };
+            document.getElementById('pageTitle').textContent = titles[viewName];
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const total = data.projects.length;
+            const active = data.projects.filter(p => p.status === 'active').length;
+            const completed = data.projects.filter(p => p.status === 'completed').length;
+            const totalBudget = data.projects.reduce((sum, p) => sum + p.budget, 0);
+
+            document.getElementById('dashTotalProjects').textContent = total;
+            document.getElementById('dashActiveProjects').textContent = active;
+            document.getElementById('dashCompleted').textContent = completed;
+            document.getElementById('dashBudget').textContent = '$' + (totalBudget / 1000).toFixed(0) + 'K';
+        }
+
+        // Render Projects
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            grid.innerHTML = data.projects.map(project => `
+                <div class="project-card">
+                    <div class="project-name">${project.name}</div>
+                    <div class="project-client">${project.client}</div>
+                    <div class="project-meta">
+                        <div><strong>Budget:</strong> $${project.budget.toLocaleString()}</div>
+                        <div><strong>Progress:</strong> ${project.progress}%</div>
+                    </div>
+                    <div class="progress-bar" style="margin: 1rem 0;">
+                        <div class="progress-fill" style="width: ${project.progress}%"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="badge badge-${project.status === 'active' ? 'success' : project.status === 'completed' ? 'info' : 'warning'}">${project.status}</span>
+                        <div class="action-buttons">
+                            <button class="icon-btn" onclick="editProject(${project.id})">✏️</button>
+                            <button class="icon-btn" onclick="deleteProject(${project.id})">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Tasks
+        function renderTasks() {
+            const table = document.getElementById('tasksTable');
+            table.innerHTML = data.tasks.map(task => {
+                const project = data.projects.find(p => p.id === task.projectId);
+                const priorityBadge = task.priority === 'high' ? 'badge-danger' : task.priority === 'medium' ? 'badge-warning' : 'badge-info';
+                const statusBadge = task.status === 'done' ? 'badge-success' : task.status === 'inprogress' ? 'badge-info' : 'badge-warning';
+                
+                return `
+                    <tr>
+                        <td><strong>${task.name}</strong></td>
+                        <td>${project ? project.name : 'N/A'}</td>
+                        <td>${task.assignee}</td>
+                        <td>${formatDate(task.dueDate)}</td>
+                        <td><span class="badge ${priorityBadge}">${task.priority}</span></td>
+                        <td><span class="badge ${statusBadge}">${task.status}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="icon-btn" onclick="editTask(${task.id})">✏️</button>
+                                <button class="icon-btn" onclick="deleteTask(${task.id})">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render Milestones
+        function renderMilestones() {
+            const container = document.getElementById('milestonesContainer');
+            container.innerHTML = data.milestones.map(milestone => {
+                const project = data.projects.find(p => p.id === milestone.projectId);
+                const statusBadge = milestone.status === 'completed' ? 'badge-success' : milestone.status === 'inprogress' ? 'badge-info' : 'badge-warning';
+                
+                return `
+                    <div class="card" style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h4 style="font-weight: 700; margin-bottom: 0.5rem;">${milestone.name}</h4>
+                                <p style="color: var(--text-light); margin-bottom: 0.5rem;">${project ? project.name : 'N/A'}</p>
+                                <p style="margin-bottom: 0.5rem;">${milestone.description}</p>
+                                <p style="font-size: 0.9rem;"><strong>Due:</strong> ${formatDate(milestone.dueDate)}</p>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; align-items: start;">
+                                <span class="badge ${statusBadge}">${milestone.status}</span>
+                                <div class="action-buttons">
+                                    <button class="icon-btn" onclick="editMilestone(${milestone.id})">✏️</button>
+                                    <button class="icon-btn" onclick="deleteMilestone(${milestone.id})">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Time Entries
+        function renderTimeEntries() {
+            const container = document.getElementById('timeEntriesContainer');
+            container.innerHTML = data.timeEntries.map(entry => {
+                const project = data.projects.find(p => p.id === entry.projectId);
+                
+                return `
+                    <div class="time-entry">
+                        <div class="time-entry-info">
+                            <h4>${entry.task}</h4>
+                            <p>${project ? project.name : 'N/A'} • ${formatDate(entry.date)}</p>
+                        </div>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <div class="time-duration">${entry.hours}h</div>
+                            <div class="action-buttons">
+                                <button class="icon-btn" onclick="deleteTimeEntry(${entry.id})">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Financials
+        function renderFinancials() {
+            const table = document.getElementById('financialsTable');
+            table.innerHTML = data.projects.map(project => {
+                const remaining = project.budget - project.spent;
+                const variance = ((project.spent / project.budget) * 100).toFixed(1);
+                const statusBadge = variance <= 100 ? 'badge-success' : 'badge-danger';
+                
+                return `
+                    <tr>
+                        <td><strong>${project.name}</strong></td>
+                        <td>$${project.budget.toLocaleString()}</td>
+                        <td>$${project.spent.toLocaleString()}</td>
+                        <td>$${remaining.toLocaleString()}</td>
+                        <td>${variance}%</td>
+                        <td><span class="badge ${statusBadge}">${variance <= 100 ? 'On Budget' : 'Over Budget'}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render Files
+        function renderFiles() {
+            const grid = document.getElementById('fileGrid');
+            grid.innerHTML = data.files.map(file => `
+                <div class="file-item" onclick="alert('File: ${file.name}')">
+                    <div class="file-icon">${file.type}</div>
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${file.size}</div>
+                </div>
+            `).join('');
+        }
+
+        // Render Calendar
+        function renderCalendar() {
+            const calendar = document.querySelector('.calendar');
+            const days = calendar.querySelectorAll('.calendar-day');
+            days.forEach(day => day.remove());
+
+            // Generate February 2026 calendar
+            const daysInMonth = 28;
+            const firstDay = 0; // Sunday
+
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                emptyDay.style.opacity = '0.3';
+                calendar.appendChild(emptyDay);
+            }
+
+            // Add days of month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                if (day === 2) dayElement.classList.add('today');
+                if (day === 15 || day === 20 || day === 28) {
+                    dayElement.classList.add('has-event');
+                    dayElement.innerHTML = `${day}<div class="event-dot"></div>`;
+                } else {
+                    dayElement.textContent = day;
+                }
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        // Populate project selects
+        function populateProjectSelects() {
+            const selects = ['taskProject', 'milestoneProject', 'timeProject'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">Select Project</option>' + 
+                    data.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+            });
+        }
+
+        // Modal functions
+        function openNewProjectModal() {
+            document.getElementById('projectForm').reset();
+            document.getElementById('projectModal').classList.add('show');
+        }
+
+        function openNewTaskModal() {
+            document.getElementById('taskForm').reset();
+            document.getElementById('taskModal').classList.add('show');
+        }
+
+        function openNewMilestoneModal() {
+            document.getElementById('milestoneForm').reset();
+            document.getElementById('milestoneModal').classList.add('show');
+        }
+
+        function openNewTimeEntry() {
+            document.getElementById('timeForm').reset();
+            document.getElementById('timeDate').valueAsDate = new Date();
+            document.getElementById('timeModal').classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Form submissions
+        document.getElementById('projectForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const project = {
+                id: Date.now(),
+                name: document.getElementById('projectName').value,
+                client: document.getElementById('projectClient').value,
+                description: document.getElementById('projectDescription').value,
+                startDate: document.getElementById('projectStart').value,
+                endDate: document.getElementById('projectEnd').value,
+                budget: parseInt(document.getElementById('projectBudget').value),
+                spent: 0,
+                status: document.getElementById('projectStatus').value,
+                progress: parseInt(document.getElementById('projectProgress').value)
+            };
+            data.projects.push(project);
+            saveData();
+            renderAll();
+            closeModal('projectModal');
+        });
+
+        document.getElementById('taskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const task = {
+                id: Date.now(),
+                name: document.getElementById('taskName').value,
+                projectId: parseInt(document.getElementById('taskProject').value),
+                description: document.getElementById('taskDescription').value,
+                assignee: document.getElementById('taskAssignee').value,
+                dueDate: document.getElementById('taskDue').value,
+                priority: document.getElementById('taskPriority').value,
+                status: document.getElementById('taskStatus').value
+            };
+            data.tasks.push(task);
+            saveData();
+            renderAll();
+            closeModal('taskModal');
+        });
+
+        document.getElementById('milestoneForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const milestone = {
+                id: Date.now(),
+                name: document.getElementById('milestoneName').value,
+                projectId: parseInt(document.getElementById('milestoneProject').value),
+                description: document.getElementById('milestoneDescription').value,
+                dueDate: document.getElementById('milestoneDue').value,
+                status: document.getElementById('milestoneStatus').value
+            };
+            data.milestones.push(milestone);
+            saveData();
+            renderAll();
+            closeModal('milestoneModal');
+        });
+
+        document.getElementById('timeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const entry = {
+                id: Date.now(),
+                projectId: parseInt(document.getElementById('timeProject').value),
+                task: document.getElementById('timeTask').value,
+                description: document.getElementById('timeDescription').value,
+                date: document.getElementById('timeDate').value,
+                hours: parseFloat(document.getElementById('timeHours').value)
+            };
+            data.timeEntries.push(entry);
+            saveData();
+            renderAll();
+            closeModal('timeModal');
+        });
+
+        // Delete functions
+        function deleteProject(id) {
+            if (confirm('Delete this project?')) {
+                data.projects = data.projects.filter(p => p.id !== id);
+                saveData();
+                renderAll();
+            }
+        }
+
+        function deleteTask(id) {
+            if (confirm('Delete this task?')) {
+                data.tasks = data.tasks.filter(t => t.id !== id);
+                saveData();
+                renderAll();
+            }
+        }
+
+        function deleteMilestone(id) {
+            if (confirm('Delete this milestone?')) {
+                data.milestones = data.milestones.filter(m => m.id !== id);
+                saveData();
+                renderAll();
+            }
+        }
+
+        function deleteTimeEntry(id) {
+            if (confirm('Delete this time entry?')) {
+                data.timeEntries = data.timeEntries.filter(t => t.id !== id);
+                saveData();
+                renderAll();
+            }
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function uploadFile() {
+            alert('File upload functionality would be implemented here');
+        }
+
+        function exportAllData() {
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'portfolio-data-' + new Date().toISOString().split('T')[0] + '.json';
+            link.click();
+        }
+
+        // Close modals on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('show');
+                }
+            });
+        });
+
+        // Initialize app
+        loadData();
+    </script>
+</body>
+</html>

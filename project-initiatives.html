@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Initiatives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .page-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            animation: fadeIn 0.6s ease;
+        }
+
+        .tab {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Projects Summary */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .project-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .project-status {
+            display: inline-block;
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .status-active { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .status-planning { background: rgba(59, 130, 246, 0.15); color: var(--info); }
+        .status-hold { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .status-completed { background: rgba(100, 116, 139, 0.15); color: var(--text-light); }
+
+        .project-client {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .project-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .meta-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .meta-value {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--info));
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+
+        .progress-label {
+            text-align: right;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Milestones */
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--primary), var(--info));
+        }
+
+        .milestone-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+
+        .milestone-marker {
+            position: absolute;
+            left: -3rem;
+            top: 0;
+            width: 42px;
+            height: 42px;
+            background: white;
+            border: 4px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            z-index: 1;
+        }
+
+        .milestone-marker.completed {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .milestone-marker.pending {
+            background: white;
+            border-color: var(--text-light);
+        }
+
+        .milestone-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .milestone-content:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .milestone-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .milestone-project {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .milestone-date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        /* Kanban Board */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .kanban-column {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .kanban-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .kanban-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .kanban-count {
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .kanban-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-height: 200px;
+        }
+
+        .kanban-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            cursor: move;
+            transition: all 0.3s ease;
+        }
+
+        .kanban-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .kanban-card-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .kanban-card-meta {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.8rem;
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .priority-high { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .priority-medium { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .priority-low { background: rgba(59, 130, 246, 0.15); color: var(--info); }
+
+        /* Gantt Chart */
+        .gantt-container {
+            overflow-x: auto;
+        }
+
+        .gantt-chart {
+            min-width: 1000px;
+            margin-top: 1rem;
+        }
+
+        .gantt-header {
+            display: grid;
+            grid-template-columns: 250px repeat(12, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+
+        .gantt-header-cell {
+            background: var(--bg);
+            padding: 0.8rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .gantt-header-cell:first-child {
+            text-align: left;
+        }
+
+        .gantt-row {
+            display: grid;
+            grid-template-columns: 250px repeat(12, 1fr);
+            gap: 1px;
+            background: var(--border);
+            min-height: 60px;
+        }
+
+        .gantt-cell {
+            background: white;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .gantt-project-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .gantt-bar {
+            height: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--info));
+            border-radius: 6px;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            padding: 0 0.8rem;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Task Progress */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .task-item {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .task-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .task-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox:hover {
+            border-color: var(--primary);
+        }
+
+        .checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+            position: relative;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .gantt-header, .gantt-row {
+                grid-template-columns: 200px repeat(12, 80px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="page-title">Project Initiatives</h1>
+            <p class="subtitle">Comprehensive view of all active projects and initiatives</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('summary')">Summary</button>
+            <button class="tab" onclick="showTab('milestones')">Milestones</button>
+            <button class="tab" onclick="showTab('kanban')">Kanban</button>
+            <button class="tab" onclick="showTab('gantt')">Gantt Chart</button>
+            <button class="tab" onclick="showTab('tasks')">Tasks</button>
+        </div>
+
+        <!-- Summary Tab -->
+        <div class="tab-content active" id="summary">
+            <div class="card">
+                <h3 class="card-title">All Projects</h3>
+                <div class="projects-grid" id="projectsGrid">
+                    <!-- Projects will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Milestones Tab -->
+        <div class="tab-content" id="milestones">
+            <div class="card">
+                <h3 class="card-title">Project Milestones Timeline</h3>
+                <div class="timeline" id="milestonesTimeline">
+                    <!-- Milestones will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Kanban Tab -->
+        <div class="tab-content" id="kanban">
+            <div class="card">
+                <h3 class="card-title">Task Board</h3>
+                <div class="kanban-board">
+                    <div class="kanban-column">
+                        <div class="kanban-header">
+                            <div class="kanban-title">📋 To Do</div>
+                            <div class="kanban-count" id="todoCount">0</div>
+                        </div>
+                        <div class="kanban-cards" id="todoCards">
+                            <!-- Cards will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="kanban-column">
+                        <div class="kanban-header">
+                            <div class="kanban-title">🔄 In Progress</div>
+                            <div class="kanban-count" id="inprogressCount">0</div>
+                        </div>
+                        <div class="kanban-cards" id="inprogressCards">
+                            <!-- Cards will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="kanban-column">
+                        <div class="kanban-header">
+                            <div class="kanban-title">👀 Review</div>
+                            <div class="kanban-count" id="reviewCount">0</div>
+                        </div>
+                        <div class="kanban-cards" id="reviewCards">
+                            <!-- Cards will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="kanban-column">
+                        <div class="kanban-header">
+                            <div class="kanban-title">✅ Done</div>
+                            <div class="kanban-count" id="doneCount">0</div>
+                        </div>
+                        <div class="kanban-cards" id="doneCards">
+                            <!-- Cards will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gantt Chart Tab -->
+        <div class="tab-content" id="gantt">
+            <div class="card">
+                <h3 class="card-title">Project Timeline (Gantt Chart)</h3>
+                <div class="gantt-container">
+                    <div class="gantt-chart">
+                        <div class="gantt-header">
+                            <div class="gantt-header-cell">Project</div>
+                            <div class="gantt-header-cell">Jan</div>
+                            <div class="gantt-header-cell">Feb</div>
+                            <div class="gantt-header-cell">Mar</div>
+                            <div class="gantt-header-cell">Apr</div>
+                            <div class="gantt-header-cell">May</div>
+                            <div class="gantt-header-cell">Jun</div>
+                            <div class="gantt-header-cell">Jul</div>
+                            <div class="gantt-header-cell">Aug</div>
+                            <div class="gantt-header-cell">Sep</div>
+                            <div class="gantt-header-cell">Oct</div>
+                            <div class="gantt-header-cell">Nov</div>
+                            <div class="gantt-header-cell">Dec</div>
+                        </div>
+                        <div id="ganttRows">
+                            <!-- Gantt rows will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks Tab -->
+        <div class="tab-content" id="tasks">
+            <div class="card">
+                <h3 class="card-title">Task Progress Overview</h3>
+                <div class="task-list" id="tasksList">
+                    <!-- Tasks will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let data = {
+            projects: [],
+            tasks: [],
+            milestones: []
+        };
+
+        // Load data
+        function loadData() {
+            const saved = localStorage.getItem('portfolioData');
+            if (saved) {
+                data = JSON.parse(saved);
+            } else {
+                initializeSampleData();
+            }
+            renderAll();
+        }
+
+        // Initialize sample data
+        function initializeSampleData() {
+            data.projects = [
+                {
+                    id: 1,
+                    name: 'Brand Redesign Initiative',
+                    client: 'TechCorp Industries',
+                    status: 'active',
+                    budget: 75000,
+                    progress: 65,
+                    startDate: '2024-01-15',
+                    endDate: '2024-06-30',
+                    startMonth: 0,
+                    duration: 6
+                },
+                {
+                    id: 2,
+                    name: 'E-Commerce Platform',
+                    client: 'Retail Solutions Inc',
+                    status: 'active',
+                    budget: 120000,
+                    progress: 45,
+                    startDate: '2024-02-01',
+                    endDate: '2024-08-15',
+                    startMonth: 1,
+                    duration: 7
+                },
+                {
+                    id: 3,
+                    name: 'Mobile App Development',
+                    client: 'HealthTech Startups',
+                    status: 'completed',
+                    budget: 95000,
+                    progress: 100,
+                    startDate: '2023-11-01',
+                    endDate: '2024-03-31',
+                    startMonth: 0,
+                    duration: 3
+                },
+                {
+                    id: 4,
+                    name: 'Digital Marketing Campaign',
+                    client: 'Global Fashion Co',
+                    status: 'planning',
+                    budget: 45000,
+                    progress: 15,
+                    startDate: '2024-03-01',
+                    endDate: '2024-05-30',
+                    startMonth: 2,
+                    duration: 3
+                },
+                {
+                    id: 5,
+                    name: 'Cloud Migration',
+                    client: 'Finance Corp',
+                    status: 'active',
+                    budget: 150000,
+                    progress: 55,
+                    startDate: '2024-01-01',
+                    endDate: '2024-09-30',
+                    startMonth: 0,
+                    duration: 9
+                }
+            ];
+
+            data.tasks = [
+                { id: 1, name: 'Design mockups', projectId: 1, assignee: 'Sarah J.', dueDate: '2024-02-15', priority: 'high', status: 'inprogress' },
+                { id: 2, name: 'API Integration', projectId: 2, assignee: 'Mike C.', dueDate: '2024-02-20', priority: 'high', status: 'todo' },
+                { id: 3, name: 'User Testing', projectId: 2, assignee: 'Emily D.', dueDate: '2024-02-25', priority: 'medium', status: 'todo' },
+                { id: 4, name: 'Database Setup', projectId: 5, assignee: 'John S.', dueDate: '2024-02-10', priority: 'high', status: 'review' },
+                { id: 5, name: 'Content Creation', projectId: 4, assignee: 'Lisa M.', dueDate: '2024-03-15', priority: 'medium', status: 'inprogress' },
+                { id: 6, name: 'Code Review', projectId: 3, assignee: 'David K.', dueDate: '2024-02-05', priority: 'low', status: 'done' },
+                { id: 7, name: 'Security Audit', projectId: 5, assignee: 'Alex P.', dueDate: '2024-03-01', priority: 'high', status: 'todo' },
+                { id: 8, name: 'Documentation', projectId: 1, assignee: 'Rachel T.', dueDate: '2024-02-28', priority: 'low', status: 'inprogress' }
+            ];
+
+            data.milestones = [
+                { id: 1, name: 'Phase 1 Completion', projectId: 1, dueDate: '2024-03-15', status: 'inprogress' },
+                { id: 2, name: 'MVP Launch', projectId: 2, dueDate: '2024-05-01', status: 'pending' },
+                { id: 3, name: 'Initial Deployment', projectId: 5, dueDate: '2024-04-30', status: 'inprogress' },
+                { id: 4, name: 'Campaign Launch', projectId: 4, dueDate: '2024-03-10', status: 'pending' },
+                { id: 5, name: 'Final Release', projectId: 3, dueDate: '2024-03-31', status: 'completed' },
+                { id: 6, name: 'Beta Testing Complete', projectId: 2, dueDate: '2024-03-20', status: 'completed' }
+            ];
+
+            localStorage.setItem('portfolioData', JSON.stringify(data));
+        }
+
+        // Render all views
+        function renderAll() {
+            renderProjects();
+            renderMilestones();
+            renderKanban();
+            renderGantt();
+            renderTasks();
+        }
+
+        // Render projects
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            grid.innerHTML = data.projects.map(project => `
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-name">${project.name}</div>
+                        <div class="project-status status-${project.status}">${project.status}</div>
+                    </div>
+                    <div class="project-client">${project.client}</div>
+                    <div class="project-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Budget</div>
+                            <div class="meta-value">$${project.budget.toLocaleString()}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Timeline</div>
+                            <div class="meta-value">${formatDate(project.startDate)} - ${formatDate(project.endDate)}</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${project.progress}%"></div>
+                    </div>
+                    <div class="progress-label">${project.progress}% Complete</div>
+                </div>
+            `).join('');
+        }
+
+        // Render milestones
+        function renderMilestones() {
+            const timeline = document.getElementById('milestonesTimeline');
+            const sortedMilestones = [...data.milestones].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+            
+            timeline.innerHTML = sortedMilestones.map(milestone => {
+                const project = data.projects.find(p => p.id === milestone.projectId);
+                const icon = milestone.status === 'completed' ? '✓' : milestone.status === 'inprogress' ? '⏳' : '○';
+                
+                return `
+                    <div class="milestone-item">
+                        <div class="milestone-marker ${milestone.status}">${icon}</div>
+                        <div class="milestone-content">
+                            <div class="milestone-title">${milestone.name}</div>
+                            <div class="milestone-project">${project ? project.name : 'Unknown Project'}</div>
+                            <div class="milestone-date">Due: ${formatDate(milestone.dueDate)}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Kanban
+        function renderKanban() {
+            const columns = {
+                todo: [],
+                inprogress: [],
+                review: [],
+                done: []
+            };
+
+            data.tasks.forEach(task => {
+                const project = data.projects.find(p => p.id === task.projectId);
+                const card = `
+                    <div class="kanban-card">
+                        <div class="kanban-card-title">${task.name}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.3rem;">
+                            ${project ? project.name : 'Unknown'}
+                        </div>
+                        <div class="kanban-card-meta">
+                            <span class="priority-badge priority-${task.priority}">${task.priority}</span>
+                            <span>${task.assignee}</span>
+                        </div>
+                    </div>
+                `;
+                
+                if (columns[task.status]) {
+                    columns[task.status].push(card);
+                }
+            });
+
+            Object.keys(columns).forEach(status => {
+                document.getElementById(`${status}Cards`).innerHTML = columns[status].join('');
+                document.getElementById(`${status}Count`).textContent = columns[status].length;
+            });
+        }
+
+        // Render Gantt
+        function renderGantt() {
+            const rows = document.getElementById('ganttRows');
+            
+            rows.innerHTML = data.projects.map(project => {
+                const barStyle = `left: ${(project.startMonth / 12) * 100}%; width: ${(project.duration / 12) * 100}%;`;
+                
+                return `
+                    <div class="gantt-row">
+                        <div class="gantt-cell">
+                            <div class="gantt-project-name">${project.name}</div>
+                        </div>
+                        ${Array(12).fill(0).map((_, i) => `
+                            <div class="gantt-cell">
+                                ${i === project.startMonth ? `<div class="gantt-bar" style="${barStyle}">${project.progress}%</div>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render tasks
+        function renderTasks() {
+            const list = document.getElementById('tasksList');
+            
+            list.innerHTML = data.tasks.map(task => {
+                const project = data.projects.find(p => p.id === task.projectId);
+                const isChecked = task.status === 'done';
+                
+                return `
+                    <div class="task-item">
+                        <div class="task-header">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div class="checkbox ${isChecked ? 'checked' : ''}" onclick="toggleTask(${task.id})"></div>
+                                <div class="task-title">${task.name}</div>
+                            </div>
+                            <div class="priority-badge priority-${task.priority}">${task.priority}</div>
+                        </div>
+                        <div class="task-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">Project</div>
+                                <div class="meta-value">${project ? project.name : 'Unknown'}</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Assignee</div>
+                                <div class="meta-value">${task.assignee}</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Due Date</div>
+                                <div class="meta-value">${formatDate(task.dueDate)}</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Status</div>
+                                <div class="meta-value">${task.status}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Toggle task completion
+        function toggleTask(taskId) {
+            const task = data.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.status = task.status === 'done' ? 'todo' : 'done';
+                localStorage.setItem('portfolioData', JSON.stringify(data));
+                renderAll();
+            }
+        }
+
+        // Show tab
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Initialize
+        loadData();
+
+        // Refresh every 30 seconds
+        setInterval(loadData, 30000);
+    </script>
+</body>
+</html>
